@@ -1,0 +1,399 @@
+{% extends 'donors/base.html' %}
+
+{% block title %}Jeevadhara - Every Drop Saves a Life | Blood Donor Management System{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Hero Section */
+    .hero-banner {
+        background: linear-gradient(135deg, #B71C1C 0%, #C62828 50%, #D32F2F 100%);
+        color: #ffffff;
+        padding: 4.5rem 0 4rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+    .hero-banner::before {
+        content: "";
+        position: absolute;
+        top: -50px;
+        right: -50px;
+        width: 320px;
+        height: 320px;
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 50%;
+    }
+    .hero-banner::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        left: 20%;
+        width: 240px;
+        height: 240px;
+        background: rgba(255, 255, 255, 0.04);
+        border-radius: 50%;
+    }
+    .hero-title {
+        font-weight: 800;
+        font-size: 2.85rem;
+        line-height: 1.15;
+        letter-spacing: -1px;
+    }
+    .hero-subtitle {
+        font-size: 1.15rem;
+        color: #FFCDD2;
+        max-width: 580px;
+    }
+    .hero-stat-box {
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 12px;
+        padding: 1.25rem 1rem;
+        text-align: center;
+        transition: transform 0.2s;
+    }
+    .hero-stat-box:hover {
+        transform: translateY(-3px);
+        background: rgba(255, 255, 255, 0.18);
+    }
+    .hero-stat-number {
+        font-size: 2.1rem;
+        font-weight: 800;
+        color: #ffffff;
+        line-height: 1;
+    }
+    .hero-stat-label {
+        font-size: 0.82rem;
+        color: #FFEBEE;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-top: 0.35rem;
+        font-weight: 600;
+    }
+
+    /* Process Step Cards */
+    .step-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 12px;
+        padding: 1.75rem 1.25rem;
+        height: 100%;
+        position: relative;
+        transition: all 0.25s ease;
+    }
+    .step-card:hover {
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+        border-color: #EF9A9A;
+        transform: translateY(-4px);
+    }
+    .step-number {
+        width: 42px;
+        height: 42px;
+        background-color: var(--primary-light);
+        color: var(--primary-red);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 800;
+        font-size: 1.1rem;
+        margin-bottom: 1rem;
+    }
+
+    /* Blood Group Grid Card */
+    .blood-group-badge-card {
+        background: #ffffff;
+        border: 1px solid #E2E8F0;
+        border-radius: 10px;
+        padding: 1rem;
+        text-align: center;
+        transition: all 0.2s ease;
+        text-decoration: none;
+        display: block;
+        color: inherit;
+    }
+    .blood-group-badge-card:hover {
+        border-color: var(--primary-red);
+        box-shadow: 0 4px 14px rgba(198, 40, 40, 0.15);
+        transform: translateY(-2px);
+    }
+    .blood-group-badge-card .badge-circle {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background-color: var(--primary-light);
+        color: var(--primary-red);
+        font-weight: 800;
+        font-size: 1.15rem;
+        margin: 0 auto 0.5rem auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Banner Section -->
+<section class="hero-banner">
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="badge bg-white text-danger fw-bold px-3 py-2 rounded-pill mb-3">
+                    <i class="bi bi-shield-check me-1"></i> Verified Blood Donor Network
+                </span>
+                <h1 class="hero-title mb-3">
+                    Give the Gift of Life — <br>
+                    <span style="color: #FFEBEE;">Become a Blood Donor Today.</span>
+                </h1>
+                <p class="hero-subtitle mb-4">
+                    Jeevadhara connects voluntary blood donors with hospitals, critical patients, and emergency services in real-time. A single unit of donated blood can save up to 3 precious lives.
+                </p>
+                <div class="d-flex flex-wrap gap-3">
+                    <a href="{% url 'register_donor' %}" class="btn btn-light btn-lg text-danger fw-bold px-4 shadow">
+                        <i class="bi bi-heart-fill me-2"></i> Register as Donor
+                    </a>
+                    <a href="{% url 'donor_list' %}" class="btn btn-outline-light btn-lg px-4 fw-semibold">
+                        <i class="bi bi-search me-2"></i> Find Donors
+                    </a>
+                </div>
+            </div>
+
+            <!-- Live Metrics Counter -->
+            <div class="col-lg-5">
+                <div class="row g-3">
+                    <div class="col-6">
+                        <div class="hero-stat-box">
+                            <i class="bi bi-people-fill fs-2 mb-1 text-white"></i>
+                            <div class="hero-stat-number">{{ total_donors }}</div>
+                            <div class="hero-stat-label">Registered Donors</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="hero-stat-box">
+                            <i class="bi bi-activity fs-2 mb-1 text-white"></i>
+                            <div class="hero-stat-number">{{ available_donors }}</div>
+                            <div class="hero-stat-label">Active / Ready</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="hero-stat-box">
+                            <i class="bi bi-droplet-half fs-2 mb-1 text-white"></i>
+                            <div class="hero-stat-number">8</div>
+                            <div class="hero-stat-label">Blood Groups</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="hero-stat-box">
+                            <i class="bi bi-heartbreak-fill fs-2 mb-1 text-white"></i>
+                            <div class="hero-stat-number">100%</div>
+                            <div class="hero-stat-label">Voluntary &amp; Free</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Blood Groups Availability Overview -->
+<section class="py-5 bg-white border-bottom">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-end flex-wrap mb-4">
+            <div>
+                <h6 class="text-danger fw-bold text-uppercase mb-1"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Inventory Directory</h6>
+                <h2 class="fw-bold mb-0 text-dark">Donors by Blood Group</h2>
+            </div>
+            <a href="{% url 'donor_list' %}" class="btn btn-outline-danger btn-sm mt-2 mt-sm-0">
+                View Full Directory <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-3">
+            {% for item in blood_groups_summary %}
+                <div class="col-6 col-md-3 col-lg-3">
+                    <a href="{% url 'donor_list' %}?blood_group={{ item.code }}" class="blood-group-badge-card">
+                        <div class="badge-circle">{{ item.code }}</div>
+                        <div class="fw-bold text-dark">{{ item.label }}</div>
+                        <div class="small text-muted mt-1">
+                            {% if item.count > 0 %}
+                                <span class="badge bg-danger-subtle text-danger fw-semibold">{{ item.count }} Donor{{ item.count|pluralize }}</span>
+                            {% else %}
+                                <span class="badge bg-secondary-subtle text-secondary">None yet</span>
+                            {% endif %}
+                        </div>
+                    </a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Why Donate Blood & Health Information -->
+<section class="py-5" style="background-color: #F8F9FA;">
+    <div class="container">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <h6 class="text-danger fw-bold text-uppercase mb-1"><i class="bi bi-info-circle-fill me-1"></i> Awareness &amp; Health</h6>
+            <h2 class="fw-bold text-dark">Why Your Donation Truly Matters</h2>
+            <p class="text-muted">
+                Blood cannot be manufactured synthetically in laboratories. It can only come as a generous gift from caring human beings like you.
+            </p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-custom p-4 h-100">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-3 p-3 mb-3">
+                        <i class="bi bi-heart-pulse fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Saves Emergency Patients</h5>
+                    <p class="text-muted small">
+                        Accident victims, surgical patients, mothers experiencing childbirth complications, and cancer patients undergoing chemotherapy require urgent transfusions every single day.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-custom p-4 h-100">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-3 p-3 mb-3">
+                        <i class="bi bi-shield-plus fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Health Benefits for Donors</h5>
+                    <p class="text-muted small">
+                        Regular blood donation stimulates bone marrow to produce fresh blood cells, helps regulate body iron levels, and includes a preliminary checkup of blood pressure, pulse, and hemoglobin.
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card-custom p-4 h-100">
+                    <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-3 p-3 mb-3">
+                        <i class="bi bi-geo-alt fs-3"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark">Hyper-Local Community Help</h5>
+                    <p class="text-muted small">
+                        With Jeevadhara's city-level filtering, hospitals and families can locate registered nearby donors in minutes without relying on panicked social media forwards.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Donation Procedure (4 Simple Steps) -->
+<section class="py-5 bg-white border-top border-bottom">
+    <div class="container">
+        <div class="text-center max-w-700 mx-auto mb-5">
+            <h6 class="text-danger fw-bold text-uppercase mb-1"><i class="bi bi-list-check me-1"></i> Simple &amp; Safe</h6>
+            <h2 class="fw-bold text-dark">How Blood Donation Works</h2>
+            <p class="text-muted">The entire donation process takes less than an hour, with the actual blood draw taking only 8 to 10 minutes.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h6 class="fw-bold text-dark">Register Online</h6>
+                    <p class="text-muted small mb-0">Fill out your contact details, blood group, city, and donation willingness on Jeevadhara.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h6 class="fw-bold text-dark">Health Screening</h6>
+                    <p class="text-muted small mb-0">At the donation center, medical staff checks temperature, pulse, hemoglobin, and blood pressure.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h6 class="fw-bold text-dark">Safe Donation</h6>
+                    <p class="text-muted small mb-0">350–450 ml of blood is collected using single-use, sterile, vacuum-sealed equipment.</p>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h6 class="fw-bold text-dark">Rest &amp; Refreshment</h6>
+                    <p class="text-muted small mb-0">Enjoy light juice and snacks for 10-15 minutes before carrying on with your regular day.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Donor Eligibility Checklist -->
+<section class="py-5" style="background-color: #F8F9FA;">
+    <div class="container">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <h6 class="text-danger fw-bold text-uppercase mb-2"><i class="bi bi-patch-check-fill me-1"></i> Medical Eligibility</h6>
+                <h2 class="fw-bold text-dark mb-3">Are You Eligible to Donate?</h2>
+                <p class="text-muted mb-4">
+                    Before registering, ensure that you meet standard health criteria formulated by national blood transfusion councils.
+                </p>
+
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                        <div>
+                            <strong class="text-dark">Age Limit:</strong>
+                            <div class="text-muted small">You must be between 18 and 65 years of age.</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                        <div>
+                            <strong class="text-dark">Minimum Body Weight:</strong>
+                            <div class="text-muted small">Minimum weight of 45 kg (50 kg recommended for 450ml collections).</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                        <div>
+                            <strong class="text-dark">Hemoglobin Level:</strong>
+                            <div class="text-muted small">Not less than 12.5 g/dL.</div>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start gap-3">
+                        <i class="bi bi-check-circle-fill text-success fs-5 mt-1"></i>
+                        <div>
+                            <strong class="text-dark">Donation Interval:</strong>
+                            <div class="text-muted small">At least 90 days (3 months) since your last whole blood donation.</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <a href="{% url 'register_donor' %}" class="btn btn-jeevadhara-primary">
+                        <i class="bi bi-clipboard2-check me-1"></i> I Meet the Criteria - Register Now
+                    </a>
+                </div>
+            </div>
+
+            <!-- Call to Action Card -->
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-lg p-4 p-md-5 rounded-4" style="background: linear-gradient(145deg, #ffffff 0%, #FFF5F5 100%); border-left: 6px solid var(--primary-red) !important;">
+                    <span class="badge bg-danger-subtle text-danger fw-bold px-3 py-2 rounded-pill align-self-start mb-3">
+                        <i class="bi bi-clock-history me-1"></i> Urgent Call
+                    </span>
+                    <h3 class="fw-bold text-dark mb-3">Need Blood Immediately?</h3>
+                    <p class="text-muted mb-4">
+                        Search our verified directory of active voluntary blood donors filtered by city and blood group. Contact donors directly without intermediate agency charges.
+                    </p>
+                    <div class="d-flex flex-column flex-sm-row gap-3">
+                        <a href="{% url 'donor_list' %}" class="btn btn-jeevadhara-primary btn-lg">
+                            <i class="bi bi-search me-1"></i> Search Blood Donors
+                        </a>
+                        <a href="{% url 'register_donor' %}" class="btn btn-outline-secondary btn-lg">
+                            <i class="bi bi-person-plus me-1"></i> Join as Donor
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
