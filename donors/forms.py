@@ -1,14 +1,18 @@
 """
-Form definitions for Jeevadhara Donor Management System.
+Form definitions for Jeevadhara Donor Management System with Tailwind CSS widgets.
 """
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Donor
 
+TAILWIND_INPUT_CLASS = "mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2.5 focus:border-red-500 focus:ring-red-500 transition-colors bg-slate-50 outline-none text-slate-900 text-sm"
+TAILWIND_SELECT_CLASS = "mt-1 block w-full rounded-md border-slate-300 shadow-sm border p-2.5 focus:border-red-500 focus:ring-red-500 transition-colors bg-slate-50 outline-none text-slate-900 text-sm"
+TAILWIND_CHECKBOX_CLASS = "h-4 w-4 rounded border-slate-300 text-red-600 focus:ring-red-500"
+
 
 class DonorRegistrationForm(forms.ModelForm):
     """
-    ModelForm for registering a new blood donor with Bootstrap 5 widgets and validation.
+    ModelForm for registering a new blood donor with clean Tailwind CSS styling.
     """
     class Meta:
         model = Donor
@@ -25,68 +29,63 @@ class DonorRegistrationForm(forms.ModelForm):
         ]
         widgets = {
             'full_name': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g. Rahul Sharma',
+                'class': TAILWIND_INPUT_CLASS,
+                'placeholder': 'e.g. Rahul Nair',
                 'required': True,
                 'autocomplete': 'name',
             }),
             'email': forms.EmailInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'name@example.com',
+                'class': TAILWIND_INPUT_CLASS,
+                'placeholder': 'rahul@example.com',
                 'required': True,
                 'autocomplete': 'email',
             }),
             'phone': forms.TextInput(attrs={
-                'class': 'form-control',
+                'class': TAILWIND_INPUT_CLASS,
                 'placeholder': '+91 98765 43210',
                 'required': True,
                 'autocomplete': 'tel',
             }),
             'age': forms.NumberInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'Age (18 - 65)',
+                'class': TAILWIND_INPUT_CLASS,
+                'placeholder': '18 - 65',
                 'min': '18',
                 'max': '65',
                 'required': True,
             }),
             'gender': forms.Select(attrs={
-                'class': 'form-select',
+                'class': TAILWIND_SELECT_CLASS,
                 'required': True,
             }),
             'blood_group': forms.Select(attrs={
-                'class': 'form-select',
+                'class': TAILWIND_SELECT_CLASS,
                 'required': True,
             }),
             'city': forms.TextInput(attrs={
-                'class': 'form-control',
-                'placeholder': 'e.g. Kochi, Bengaluru, Chennai',
+                'class': TAILWIND_INPUT_CLASS,
+                'placeholder': 'e.g. Ernakulam, Kozhikode, Thiruvananthapuram',
                 'required': True,
             }),
             'address': forms.Textarea(attrs={
-                'class': 'form-control',
-                'rows': 3,
-                'placeholder': 'Enter street address, locality or landmark (optional)',
+                'class': TAILWIND_INPUT_CLASS,
+                'rows': 2,
+                'placeholder': 'e.g. Kakkanad, Marine Drive',
             }),
             'is_available': forms.CheckboxInput(attrs={
-                'class': 'form-check-input',
+                'class': TAILWIND_CHECKBOX_CLASS,
                 'id': 'is_available',
             }),
         }
         labels = {
             'full_name': 'Full Name',
             'email': 'Email Address',
-            'phone': 'Phone Number',
+            'phone': 'Contact Number',
             'age': 'Age (Years)',
             'gender': 'Gender',
             'blood_group': 'Blood Group',
-            'city': 'City / Town',
-            'address': 'Residential Address',
-            'is_available': 'I am currently available and willing to donate blood upon request',
-        }
-        help_texts = {
-            'age': 'Eligible donors must be between 18 and 65 years old.',
-            'phone': 'Include 10 digits or international dial code (e.g. +91 9876543210).',
-            'blood_group': 'Select your medically verified blood group.',
+            'city': 'District / City',
+            'address': 'Local Area / Address',
+            'is_available': 'I am currently active and available to donate blood upon request',
         }
 
     def clean_age(self):
@@ -105,5 +104,5 @@ class DonorRegistrationForm(forms.ModelForm):
     def clean_city(self):
         city = self.cleaned_data.get('city', '').strip()
         if len(city) < 2:
-            raise ValidationError("Please provide a valid city or locality name.")
+            raise ValidationError("Please provide a valid district or city name.")
         return city

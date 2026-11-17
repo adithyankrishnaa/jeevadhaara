@@ -1,280 +1,182 @@
 {% extends 'donors/base.html' %}
 
-{% block title %}Find Blood Donors - Jeevadhara{% endblock %}
-
-{% block extra_css %}
-<style>
-    .filter-card {
-        background: #ffffff;
-        border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
-    }
-    .donor-item-card {
-        background: #ffffff;
-        border: 1px solid #E2E8F0;
-        border-radius: 12px;
-        transition: all 0.2s ease;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-    .donor-item-card:hover {
-        border-color: #EF9A9A;
-        box-shadow: 0 8px 20px rgba(198, 40, 40, 0.08);
-        transform: translateY(-2px);
-    }
-    .donor-card-header {
-        padding: 1.25rem 1.25rem 0.75rem 1.25rem;
-    }
-    .donor-card-body {
-        padding: 0 1.25rem 1.25rem 1.25rem;
-        flex-grow: 1;
-    }
-    .donor-card-footer {
-        padding: 0.85rem 1.25rem;
-        background-color: #F8FAFC;
-        border-top: 1px solid #F1F5F9;
-        border-radius: 0 0 12px 12px;
-    }
-    .filter-pill {
-        display: inline-block;
-        padding: 0.3rem 0.85rem;
-        font-size: 0.85rem;
-        border-radius: 50rem;
-        background: #F1F5F9;
-        color: #475569;
-        text-decoration: none;
-        margin-right: 0.35rem;
-        margin-bottom: 0.35rem;
-        transition: all 0.2s;
-    }
-    .filter-pill:hover, .filter-pill.active {
-        background-color: var(--primary-red);
-        color: #ffffff;
-    }
-</style>
-{% endblock %}
+{% block title %}Available Donors in Kerala - Jeevadhara{% endblock %}
 
 {% block content %}
-<div class="container py-4">
-
-    <!-- Page Title & Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+<div class="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+    
+    <!-- Header with Filters & Add Button (Matches Gemini Prototype) -->
+    <div class="bg-white px-6 py-5 border-b border-slate-200 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
         <div>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb small mb-1">
-                    <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-muted">Home</a></li>
-                    <li class="breadcrumb-item active text-danger fw-semibold" aria-current="page">Donor Directory</li>
-                </ol>
-            </nav>
-            <h2 class="fw-bold text-dark mb-1">
-                <i class="bi bi-people-fill text-danger me-2"></i>Find Blood Donors
-            </h2>
-            <p class="text-muted small mb-0">
-                Search verified donors by blood group, city or locality. Contact donors directly in medical emergencies.
-            </p>
+            <h2 class="text-xl font-bold text-slate-900">Available Donors in Kerala</h2>
+            <p class="text-sm text-slate-500 mt-1">Search and filter registered blood donors across districts.</p>
         </div>
-        <div>
-            <a href="{% url 'register_donor' %}" class="btn btn-jeevadhara-primary">
-                <i class="bi bi-person-plus-fill me-1"></i> Register as Donor
-            </a>
-        </div>
-    </div>
-
-    <!-- Search & Filter Card -->
-    <div class="filter-card p-4 mb-4">
-        <form method="GET" action="{% url 'donor_list' %}" class="row g-3 align-items-end">
-            <!-- Search Keyword (City, Name, Address) -->
-            <div class="col-lg-4 col-md-6">
-                <label for="search" class="form-label fw-semibold small text-dark mb-1">
-                    <i class="bi bi-geo-alt-fill text-danger me-1"></i>Search City / Name
-                </label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
-                    <input type="text" name="search" id="search" class="form-control border-start-0" placeholder="e.g. Kochi, Bengaluru, Rahul..." value="{{ selected_search }}">
-                </div>
+        
+        <!-- Filter Form -->
+        <form method="GET" action="{% url 'donor_list' %}" class="flex flex-col sm:flex-row flex-wrap items-center gap-3 w-full lg:w-auto">
+            <!-- Search Text -->
+            <div class="w-full sm:w-48">
+                <input type="text" 
+                       name="search" 
+                       value="{{ selected_search }}" 
+                       placeholder="Search name/area..."
+                       class="block w-full rounded-md border-slate-300 shadow-sm border p-2 text-sm focus:border-red-500 focus:ring-red-500 bg-slate-50 outline-none text-slate-900">
             </div>
 
-            <!-- Blood Group Dropdown Filter -->
-            <div class="col-lg-3 col-md-3">
-                <label for="blood_group" class="form-label fw-semibold small text-dark mb-1">
-                    <i class="bi bi-droplet-fill text-danger me-1"></i>Blood Group
-                </label>
-                <select name="blood_group" id="blood_group" class="form-select">
+            <!-- District Filter Dropdown -->
+            <div class="w-full sm:w-auto">
+                <select name="search" onchange="this.form.submit()" class="block w-full sm:w-auto rounded-md border-slate-300 shadow-sm border p-2 text-sm focus:border-red-500 focus:ring-red-500 bg-slate-50 outline-none text-slate-900">
+                    <option value="">All Districts</option>
+                    <option value="Thiruvananthapuram" {% if selected_search == 'Thiruvananthapuram' %}selected{% endif %}>Thiruvananthapuram</option>
+                    <option value="Kollam" {% if selected_search == 'Kollam' %}selected{% endif %}>Kollam</option>
+                    <option value="Pathanamthitta" {% if selected_search == 'Pathanamthitta' %}selected{% endif %}>Pathanamthitta</option>
+                    <option value="Alappuzha" {% if selected_search == 'Alappuzha' %}selected{% endif %}>Alappuzha</option>
+                    <option value="Kottayam" {% if selected_search == 'Kottayam' %}selected{% endif %}>Kottayam</option>
+                    <option value="Idukki" {% if selected_search == 'Idukki' %}selected{% endif %}>Idukki</option>
+                    <option value="Ernakulam" {% if selected_search == 'Ernakulam' or selected_search == 'Kochi' %}selected{% endif %}>Ernakulam</option>
+                    <option value="Thrissur" {% if selected_search == 'Thrissur' %}selected{% endif %}>Thrissur</option>
+                    <option value="Palakkad" {% if selected_search == 'Palakkad' %}selected{% endif %}>Palakkad</option>
+                    <option value="Malappuram" {% if selected_search == 'Malappuram' %}selected{% endif %}>Malappuram</option>
+                    <option value="Kozhikode" {% if selected_search == 'Kozhikode' %}selected{% endif %}>Kozhikode</option>
+                    <option value="Wayanad" {% if selected_search == 'Wayanad' %}selected{% endif %}>Wayanad</option>
+                    <option value="Kannur" {% if selected_search == 'Kannur' %}selected{% endif %}>Kannur</option>
+                    <option value="Kasaragod" {% if selected_search == 'Kasaragod' %}selected{% endif %}>Kasaragod</option>
+                    <option value="Bengaluru" {% if selected_search == 'Bengaluru' %}selected{% endif %}>Bengaluru</option>
+                </select>
+            </div>
+
+            <!-- Blood Group Filter Dropdown -->
+            <div class="w-full sm:w-auto">
+                <select name="blood_group" onchange="this.form.submit()" class="block w-full sm:w-auto rounded-md border-slate-300 shadow-sm border p-2 text-sm focus:border-red-500 focus:ring-red-500 bg-slate-50 outline-none text-slate-900">
                     <option value="">All Blood Groups</option>
                     {% for code, label in blood_groups %}
                         <option value="{{ code }}" {% if selected_blood_group == code %}selected{% endif %}>
-                            {{ label }}
+                            {{ code }}
                         </option>
                     {% endfor %}
                 </select>
             </div>
 
-            <!-- Availability Status Dropdown -->
-            <div class="col-lg-3 col-md-3">
-                <label for="availability" class="form-label fw-semibold small text-dark mb-1">
-                    <i class="bi bi-toggle-on text-danger me-1"></i>Availability
-                </label>
-                <select name="availability" id="availability" class="form-select">
-                    <option value="">All Statuses</option>
-                    <option value="available" {% if selected_availability == 'available' %}selected{% endif %}>Available Only</option>
-                    <option value="unavailable" {% if selected_availability == 'unavailable' %}selected{% endif %}>Unavailable</option>
-                </select>
-            </div>
+            <!-- Submit button if needed -->
+            <button type="submit" class="hidden sm:inline-flex px-3 py-2 rounded-md text-sm font-medium text-slate-700 bg-slate-100 hover:bg-slate-200 transition-colors">
+                Filter
+            </button>
 
-            <!-- Buttons -->
-            <div class="col-lg-2 col-md-12 d-flex gap-2">
-                <button type="submit" class="btn btn-jeevadhara-primary w-100">
-                    <i class="bi bi-funnel-fill me-1"></i> Filter
-                </button>
-                {% if selected_search or selected_blood_group or selected_availability %}
-                    <a href="{% url 'donor_list' %}" class="btn btn-outline-secondary" title="Reset Filters">
-                        <i class="bi bi-arrow-counterclockwise"></i>
-                    </a>
-                {% endif %}
-            </div>
+            {% if selected_search or selected_blood_group %}
+                <a href="{% url 'donor_list' %}" class="text-xs text-red-600 hover:text-red-700 underline font-medium">
+                    Reset
+                </a>
+            {% endif %}
+
+            <!-- Add New Donor Button -->
+            <a href="{% url 'register_donor' %}" class="w-full sm:w-auto inline-flex justify-center items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all">
+                Add New Donor
+            </a>
         </form>
-
-        <!-- Quick City Filter Pills -->
-        {% if available_cities %}
-            <div class="mt-3 pt-3 border-top d-flex align-items-center flex-wrap gap-1">
-                <span class="small fw-semibold text-muted me-2"><i class="bi bi-pin-map-fill text-danger me-1"></i>Quick Cities:</span>
-                {% for city in available_cities %}
-                    <a href="{% url 'donor_list' %}?search={{ city }}{% if selected_blood_group %}&blood_group={{ selected_blood_group }}{% endif %}" 
-                       class="filter-pill {% if selected_search == city %}active{% endif %}">
-                        {{ city }}
-                    </a>
-                {% endfor %}
-            </div>
-        {% endif %}
     </div>
 
-    <!-- Results Status Bar -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="text-muted small">
-            Showing <strong class="text-dark">{{ total_results }}</strong> donor{{ total_results|pluralize }} 
-            {% if selected_blood_group or selected_search or selected_availability %}
-                matching active filters (out of {{ total_in_db }} total registered)
-            {% else %}
-                registered on Jeevadhara
-            {% endif %}
-        </div>
-        
-        <!-- Active Filter Tags -->
-        <div class="d-none d-sm-flex gap-2">
-            {% if selected_blood_group %}
-                <span class="badge bg-danger-subtle text-danger border border-danger-subtle">
-                    Group: {{ selected_blood_group }}
-                </span>
-            {% endif %}
-            {% if selected_search %}
-                <span class="badge bg-primary-subtle text-primary border border-primary-subtle">
-                    "{{ selected_search }}"
-                </span>
-            {% endif %}
-            {% if selected_availability %}
-                <span class="badge bg-secondary-subtle text-secondary border">
-                    {{ selected_availability|title }}
-                </span>
-            {% endif %}
-        </div>
-    </div>
-
-    <!-- Donors List -->
+    <!-- Table Container (Matches Gemini Prototype) -->
     {% if donors %}
-        <div class="row g-4">
-            {% for donor in donors %}
-                <div class="col-lg-4 col-md-6">
-                    <div class="donor-item-card">
-                        
-                        <!-- Header with Blood Group Badge & Name -->
-                        <div class="donor-card-header d-flex justify-content-between align-items-start">
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="blood-badge">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+                <thead class="bg-slate-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            Donor Name
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            Blood Group
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            Location
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            Contact
+                        </th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                            Status
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-slate-200">
+                    {% for donor in donors %}
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <!-- Donor Name -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-slate-900">{{ donor.full_name }}</div>
+                                <div class="text-xs text-slate-400">{{ donor.age }} yrs • {{ donor.gender }}</div>
+                            </td>
+
+                            <!-- Blood Group Badge (Colorful Badges matching Gemini Canvas) -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    {% if donor.blood_group == 'O+' %}bg-blue-100 text-blue-800
+                                    {% elif donor.blood_group == 'O-' %}bg-rose-100 text-rose-800
+                                    {% elif donor.blood_group == 'A+' %}bg-indigo-100 text-indigo-800
+                                    {% elif donor.blood_group == 'A-' %}bg-emerald-100 text-emerald-800
+                                    {% elif donor.blood_group == 'B+' %}bg-purple-100 text-purple-800
+                                    {% elif donor.blood_group == 'B-' %}bg-pink-100 text-pink-800
+                                    {% elif donor.blood_group == 'AB+' %}bg-amber-100 text-amber-800
+                                    {% else %}bg-teal-100 text-teal-800{% endif %}">
                                     {{ donor.blood_group }}
-                                </div>
-                                <div>
-                                    <h5 class="fw-bold text-dark mb-0">{{ donor.full_name }}</h5>
-                                    <div class="text-muted small">
-                                        <i class="bi bi-geo-alt-fill text-danger me-1"></i>{{ donor.city }}
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Availability Status -->
-                            <div>
+                                </span>
+                            </td>
+
+                            <!-- Location (District & Area) -->
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm font-medium text-slate-900">{{ donor.city }}</div>
+                                <div class="text-xs text-slate-500">{{ donor.address|default:"General Area" }}</div>
+                            </td>
+
+                            <!-- Contact -->
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-600">
+                                <a href="tel:{{ donor.phone }}" class="hover:text-red-600 hover:underline font-mono text-sm inline-flex items-center gap-1">
+                                    <svg class="w-3.5 h-3.5 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 4V3z"/>
+                                    </svg>
+                                    {{ donor.phone }}
+                                </a>
+                            </td>
+
+                            <!-- Status -->
+                            <td class="px-6 py-4 whitespace-nowrap">
                                 {% if donor.is_available %}
-                                    <span class="badge badge-available">
-                                        <i class="bi bi-check-circle-fill me-1"></i>Available
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium bg-green-50 text-green-700 border border-green-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Available
                                     </span>
                                 {% else %}
-                                    <span class="badge badge-unavailable">
-                                        <i class="bi bi-slash-circle me-1"></i>Unavailable
+                                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-xs font-medium bg-slate-50 text-slate-600 border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span> Unavailable
                                     </span>
                                 {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Card Body: Details & Address -->
-                        <div class="donor-card-body pt-2">
-                            <div class="row g-2 mb-2 small text-secondary">
-                                <div class="col-6">
-                                    <strong>Age:</strong> {{ donor.age }} years
-                                </div>
-                                <div class="col-6">
-                                    <strong>Gender:</strong> {{ donor.gender }}
-                                </div>
-                            </div>
-
-                            {% if donor.address %}
-                                <div class="small text-muted mb-2 bg-light p-2 rounded-2">
-                                    <i class="bi bi-building me-1"></i>{{ donor.address }}
-                                </div>
-                            {% endif %}
-
-                            <div class="small text-muted">
-                                <i class="bi bi-calendar3 me-1"></i>Registered {{ donor.created_at|date:"M d, Y" }}
-                            </div>
-                        </div>
-
-                        <!-- Card Footer: Direct Contact Actions -->
-                        <div class="donor-card-footer d-flex gap-2">
-                            <a href="tel:{{ donor.phone }}" class="btn btn-outline-danger btn-sm flex-grow-1" title="Call Donor Directly">
-                                <i class="bi bi-telephone-fill me-1"></i>{{ donor.phone }}
-                            </a>
-                            <a href="mailto:{{ donor.email }}?subject=Urgent Blood Request - Jeevadhara&body=Hello {{ donor.full_name }}, we found your contact via Jeevadhara Blood Donor Portal for blood group {{ donor.blood_group }}." 
-                               class="btn btn-outline-secondary btn-sm" title="Send Email">
-                                <i class="bi bi-envelope-fill"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% endfor %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-
     {% else %}
-        <!-- User-friendly Empty State -->
-        <div class="card-custom text-center p-5 my-4">
-            <div class="d-inline-flex align-items-center justify-content-center bg-danger-subtle text-danger rounded-circle p-4 mb-3" style="width: 80px; height: 80px;">
-                <i class="bi bi-search-heart fs-1"></i>
-            </div>
-            <h3 class="fw-bold text-dark mb-2">No Donors Found</h3>
-            <p class="text-muted mx-auto mb-4" style="max-width: 500px;">
-                {% if selected_search or selected_blood_group or selected_availability %}
-                    We could not find any donors matching your filter criteria. Try adjusting the city search or selecting another blood group.
+        <!-- Empty State (Matches Gemini Prototype) -->
+        <div class="text-center py-16 px-4">
+            <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"/>
+            </svg>
+            <h3 class="mt-2 text-base font-semibold text-slate-900">No donors found</h3>
+            <p class="mt-1 text-sm text-slate-500">
+                {% if selected_search or selected_blood_group %}
+                    No donors matched your current filter criteria. Try clearing filters or searching another area.
                 {% else %}
-                    There are no donors registered in the system yet. Be the very first voluntary donor to sign up!
+                    Be the first to register as a voluntary blood donor in Kerala.
                 {% endif %}
             </p>
-            <div class="d-flex justify-content-center gap-3 flex-wrap">
-                {% if selected_search or selected_blood_group or selected_availability %}
-                    <a href="{% url 'donor_list' %}" class="btn btn-outline-secondary">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i> Clear All Filters
+            <div class="mt-6 flex justify-center gap-3">
+                {% if selected_search or selected_blood_group %}
+                    <a href="{% url 'donor_list' %}" class="inline-flex items-center px-4 py-2 border border-slate-300 shadow-sm text-sm font-medium rounded-md text-slate-700 bg-white hover:bg-slate-50">
+                        Clear Filters
                     </a>
                 {% endif %}
-                <a href="{% url 'register_donor' %}" class="btn btn-jeevadhara-primary">
-                    <i class="bi bi-person-plus-fill me-1"></i> Register as Donor Now
+                <a href="{% url 'register_donor' %}" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700">
+                    Add New Donor
                 </a>
             </div>
         </div>
