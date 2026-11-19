@@ -34,7 +34,7 @@ except ImportError:
     sys.exit(1)
 
 # Default cluster details provided by user
-DEFAULT_BASE_URI = "mongodb+srv://krishnaadithyan599_db_user:<db_password>@jeevadhaara.tzdqdn0.mongodb.net/?retryWrites=true&w=majority&appName=jeevadhaara"
+DEFAULT_BASE_URI = "mongodb+srv://krishnaadithyan599_db_user:t0s2BbiRwMf48bjA@cluster0.9v7kv4i.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
 DEFAULT_DB_NAME = "jeevadhaara"
 
 
