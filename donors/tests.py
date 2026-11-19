@@ -1,6 +1,7 @@
 """
 Automated unit and integration tests for Jeevadhara Donor Management System.
 """
+import json
 from django.test import TestCase, Client
 from django.urls import reverse
 from .models import Donor
@@ -166,3 +167,33 @@ class DonorViewsTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['donors']), 0)
         self.assertEqual(response.context['total_results'], 0)
+
+    def test_single_page_app_view(self):
+        response = self.client.get(reverse('single_page_app'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'donors/app.html')
+
+    def test_api_donors_list(self):
+        response = self.client.get(reverse('api_donors_list'))
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertIsInstance(data, list)
+        self.assertEqual(len(data), 1)
+        self.assertEqual(data[0]['name'], "Arjun Varma")
+
+    def test_api_register_donor(self):
+        payload = {
+            'name': 'Gautam Krishna',
+            'bloodGroup': 'AB+',
+            'contact': '+91 9447123456',
+            'district': 'Kozhikode',
+            'area': 'Mavoor Road',
+        }
+        response = self.client.post(
+            reverse('api_register_donor'),
+            data=json.dumps(payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, 201)
+        self.assertTrue(Donor.objects.filter(full_name='Gautam Krishna').exists())
+

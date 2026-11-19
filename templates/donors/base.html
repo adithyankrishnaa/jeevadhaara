@@ -37,7 +37,7 @@
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background-color: #f8fafc; /* Light gray/blue background */
+            background-color: #f8fafc;
         }
         .fade-in {
             animation: fadeIn 0.3s ease-in-out;
@@ -61,7 +61,7 @@
                         <path d="M12,2c0,0-8,7.5-8,14a8,8,0,0,0,16,0C20,9.5,12,2,12,2ZM12,18a4,4,0,1,1,4-4A4,4,0,0,1,12,18Z"/>
                     </svg>
                     <div class="flex flex-col">
-                        <span class="font-bold text-lg leading-tight text-white tracking-tight">Jeevadhara</span>
+                        <span class="font-bold text-lg leading-tight text-white tracking-tight">Jeevadhaara</span>
                         <span class="text-[10px] leading-tight font-medium text-red-100">ജീവാധാര കേരള ബ്ലഡ് ബാങ്ക്</span>
                     </div>
                 </a>
@@ -79,6 +79,10 @@
                     <a href="{% url 'donor_list' %}" 
                        class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'donor_list' %}bg-red-700 text-white{% else %}text-red-100 hover:text-white hover:bg-red-700{% endif %}">
                         Donors
+                    </a>
+                    <a href="{% url 'single_page_app' %}" 
+                       class="px-3 py-2 rounded-md text-sm font-medium transition-colors {% if request.resolver_match.url_name == 'single_page_app' %}bg-red-700 text-white{% else %}text-red-100 hover:text-white hover:bg-red-700{% endif %}">
+                        Interactive App
                     </a>
                     <a href="/admin/" target="_blank" 
                        class="hidden md:inline-flex px-3 py-1.5 rounded-md text-xs font-semibold text-white bg-red-800 hover:bg-red-900 transition-colors ml-2">
@@ -111,17 +115,15 @@
         </div>
     {% endif %}
 
-    <!-- Main Content Area -->
-    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 fade-in">
+    <!-- Page Body -->
+    <main class="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
+    <!-- Page Footer -->
     <footer class="bg-white border-t border-slate-200 mt-auto">
-        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center">
-            <p class="text-xs sm:text-sm text-slate-500">
-                &copy; 2026 Jeevadhaara Kerala Blood Bank (ജീവാദാര). Created for Web Development Training.
-            </p>
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+            <p class="text-center text-sm text-slate-500">&copy; 2026 Jeevadhaara Kerala Blood Bank (ജീവാധാര). Created for Web Development Training.</p>
         </div>
     </footer>
 

@@ -4,7 +4,7 @@ A full-stack Python Django web application for managing voluntary blood donors, 
 
 ---
 
-## 🩸 Features
+## Key Features
 
 1. **Modern Hero Landing Page (`/`)**:
    - Modern medical hero banner with Kerala blood bank theme (`#DC2626`).
@@ -27,27 +27,44 @@ A full-stack Python Django web application for managing voluntary blood donors, 
    - One-click contact action buttons (`tel:` link).
    - Informative empty-state guidance when search criteria yield zero matches.
 
-4. **Django Administration Back-Office (`/admin/`)**:
+4. **Interactive Single Page Application (`/app/` or `index.html`)**:
+   - Client-side interactive interface with instant view transitions between Home, Register, and Donors.
+   - REST API integration with `/api/donors/` and `/api/register/` to persist registrations in SQLite.
+   - Configurable backend URL connection via `.env` (`BACKEND_URL`).
+
+5. **REST API Endpoints**:
+   - `GET /api/donors/?district=<name>`: Returns registered donors in JSON format.
+   - `POST /api/register/`: Accepts donor registrations and commits them to SQLite.
+
+6. **Environment Variable Configuration (`.env`)**:
+   - Configuration powered by `python-dotenv`:
+     - `SECRET_KEY`: Django secret key
+     - `DEBUG`: Debug mode toggle
+     - `ALLOWED_HOSTS`: Allowed HTTP hosts
+     - `BACKEND_URL`: URL of the backend API for client-side integration
+
+7. **Django Administration Back-Office (`/admin/`)**:
    - Model registration with `list_display`, `list_filter`, `search_fields`, and `list_editable`.
    - In-place toggling of donor availability directly from the admin table.
    - Role-based permissions, cryptographic password hashing (PBKDF2 SHA-256), and session auditing.
 
-5. **Realistic Demo Data Seeding**:
-   - Custom Django management command `python manage.py seed_demo_data` populating realistic sample records across Kerala districts and creating default superuser credentials.
-
-6. **Automated Unit & Integration Test Suite**:
-   - Complete test suite in `donors/tests.py` validating models, forms, QuerySet filtering, and HTTP views with 100% pass rate.
+8. **Automated Unit & Integration Test Suite**:
+   - Complete test suite in `donors/tests.py` with 16 automated tests passing at 100%.
 
 ---
 
-## 📁 Project Structure
+## Project Structure
 
 ```text
 jeevadhaara_django/
 |-- manage.py
 |-- requirements.txt
 |-- README.md
+|-- .env
+|-- .env.example
+|-- .gitignore
 |-- db.sqlite3
+|-- index.html
 |-- docs/
 |   \-- Jeevadhaara_Final_Formatted_Report.pdf
 |-- jeevadhaara/
@@ -77,31 +94,39 @@ jeevadhaara_django/
         |-- base.html
         |-- home.html
         |-- register.html
-        \-- donor_list.html
+        |-- donor_list.html
+        \-- app.html
 ```
 
 ---
 
-## 📄 Academic Internship Report
-
-The complete, formatted academic internship project report conforming to Bengaluru North University guidelines is available in the repository:
-- **Report Document**: [docs/Jeevadhaara_Final_Formatted_Report.pdf](docs/Jeevadhaara_Final_Formatted_Report.pdf) (32 Pages, Formatted with TOC, Architecture, and Outcomes)
-
----
-
-## 🚀 Quick Start Guide
+## Quick Start Guide
 
 ### 1. Install Dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-### 2. Apply Database Migrations
+### 2. Configure Environment Variables
+Copy `.env.example` to `.env` (pre-configured for local development):
+```bash
+cp .env.example .env
+```
+
+Contents of `.env`:
+```env
+SECRET_KEY=django-insecure-jeevadhaara-blood-donor-mgmt-key-2026-bca
+DEBUG=True
+ALLOWED_HOSTS=localhost,127.0.0.1,*
+BACKEND_URL=http://127.0.0.1:8000
+```
+
+### 3. Apply Database Migrations
 ```bash
 python manage.py migrate
 ```
 
-### 3. Seed Demo Data & Superuser Credentials
+### 4. Seed Demo Data & Superuser Credentials
 ```bash
 python manage.py seed_demo_data
 ```
@@ -111,7 +136,7 @@ python manage.py seed_demo_data
 > - **Password**: `admin123`
 > - **Admin URL**: `http://127.0.0.1:8000/admin/`
 
-### 4. Run Development Server
+### 5. Run Development Server
 ```bash
 python manage.py runserver
 ```
@@ -120,14 +145,22 @@ Open your browser and navigate to:
 - **Home Page**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
 - **Register Donor**: [http://127.0.0.1:8000/register/](http://127.0.0.1:8000/register/)
 - **Find Donors**: [http://127.0.0.1:8000/donors/](http://127.0.0.1:8000/donors/)
+- **Interactive App (SPA)**: [http://127.0.0.1:8000/app/](http://127.0.0.1:8000/app/)
 - **Admin Panel**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
 
 ---
 
-## 🧪 Running Automated Tests
+## Running Automated Tests
 
-Run the test suite to verify all 13 tests:
+Run the test suite to verify all 16 tests:
 
 ```bash
 python manage.py test donors
 ```
+
+---
+
+## Academic Internship Report
+
+The complete, formatted academic internship project report conforming to Bengaluru North University guidelines is available in the repository:
+- **Report Document**: [docs/Jeevadhaara_Final_Formatted_Report.pdf](docs/Jeevadhaara_Final_Formatted_Report.pdf) (32 Pages, Formatted with TOC, Architecture, and Outcomes)
