@@ -36,19 +36,26 @@ A full-stack Python Django web application for managing voluntary blood donors, 
    - `GET /api/donors/?district=<name>`: Returns registered donors in JSON format.
    - `POST /api/register/`: Accepts donor registrations and commits them to SQLite.
 
-6. **Environment Variable Configuration (`.env`)**:
+6. **MongoDB Atlas Cloud Synchronization (`save_to_mongodb.py`)**:
+   - Export and synchronize all registered donors to MongoDB Atlas cluster (`jeevadhaara.tzdqdn0.mongodb.net`).
+   - Upsert mechanism matching by ID and email to prevent duplication.
+   - Automated index creation on `blood_group`, `city`, and `is_available`.
+   - Run via standalone script: `python save_to_mongodb.py` or Django management command: `python manage.py save_to_mongodb`.
+
+7. **Environment Variable Configuration (`.env`)**:
    - Configuration powered by `python-dotenv`:
      - `SECRET_KEY`: Django secret key
      - `DEBUG`: Debug mode toggle
      - `ALLOWED_HOSTS`: Allowed HTTP hosts
      - `BACKEND_URL`: URL of the backend API for client-side integration
+     - `MONGODB_URI`: MongoDB Atlas connection URI
 
-7. **Django Administration Back-Office (`/admin/`)**:
+8. **Django Administration Back-Office (`/admin/`)**:
    - Model registration with `list_display`, `list_filter`, `search_fields`, and `list_editable`.
    - In-place toggling of donor availability directly from the admin table.
    - Role-based permissions, cryptographic password hashing (PBKDF2 SHA-256), and session auditing.
 
-8. **Automated Unit & Integration Test Suite**:
+9. **Automated Unit & Integration Test Suite**:
    - Complete test suite in `donors/tests.py` with 16 automated tests passing at 100%.
 
 ---
@@ -65,6 +72,7 @@ jeevadhaara_django/
 |-- .gitignore
 |-- db.sqlite3
 |-- index.html
+|-- save_to_mongodb.py
 |-- docs/
 |   \-- Jeevadhaara_Final_Formatted_Report.pdf
 |-- jeevadhaara/
@@ -88,7 +96,8 @@ jeevadhaara_django/
 |       |-- __init__.py
 |       \-- commands/
 |           |-- __init__.py
-|           \-- seed_demo_data.py
+|           |-- seed_demo_data.py
+|           \-- save_to_mongodb.py
 \-- templates/
     \-- donors/
         |-- base.html
@@ -108,7 +117,7 @@ pip install -r requirements.txt
 ```
 
 ### 2. Configure Environment Variables
-Copy `.env.example` to `.env` (pre-configured for local development):
+Copy `.env.example` to `.env`:
 ```bash
 cp .env.example .env
 ```
@@ -119,6 +128,7 @@ SECRET_KEY=django-insecure-jeevadhaara-blood-donor-mgmt-key-2026-bca
 DEBUG=True
 ALLOWED_HOSTS=localhost,127.0.0.1,*
 BACKEND_URL=http://127.0.0.1:8000
+MONGODB_URI=mongodb+srv://krishnaadithyan599_db_user:<db_password>@jeevadhaara.tzdqdn0.mongodb.net/?retryWrites=true&w=majority&appName=jeevadhaara
 ```
 
 ### 3. Apply Database Migrations
@@ -147,6 +157,30 @@ Open your browser and navigate to:
 - **Find Donors**: [http://127.0.0.1:8000/donors/](http://127.0.0.1:8000/donors/)
 - **Interactive App (SPA)**: [http://127.0.0.1:8000/app/](http://127.0.0.1:8000/app/)
 - **Admin Panel**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+
+---
+
+## 🍃 Exporting Data to MongoDB Atlas
+
+To export and synchronize all donor records to your MongoDB Atlas cluster:
+
+### Option A: Using the Standalone Python Script
+```bash
+python save_to_mongodb.py --password YOUR_ATLAS_PASSWORD
+```
+Or interactively (will prompt for password securely):
+```bash
+python save_to_mongodb.py
+```
+
+### Option B: Using the Django Management Command
+```bash
+python manage.py save_to_mongodb --password YOUR_ATLAS_PASSWORD
+```
+
+Target Cluster: `jeevadhaara.tzdqdn0.mongodb.net`  
+Database: `jeevadhaara`  
+Collection: `donors`  
 
 ---
 
